@@ -2,6 +2,7 @@ import ply.yacc
 from lex import tokens, literals
 import sys
 import vm_code_generator as code_generator
+import Node
 
 if len(sys.argv) != 2:
     print('Erro: Introduza path a um ficheiro com código FORTH.', file=sys.stderr)
@@ -9,11 +10,19 @@ if len(sys.argv) != 2:
 
 vm_code = 'START\n'
 
+def p_S(p):
+    """
+    S : Expression '$'
+    """
+    p[0] = Node.S(p[1])
+
 def p_expression(p):
     """
-    Expression : ArithmeticOp
-               | Literal
+    Expression : Expression ArithmeticOp
+               | Expression Literal
+               | '$'
     """
+    p[0] = Node.Expression('doesnt matter', p[1], p[2])
 
 def p_arithmeticop(p):
     """
@@ -21,21 +30,16 @@ def p_arithmeticop(p):
                  | '-'
                  | '*'
                  | '/'
-                 | MOD
                  | NEGATE
-                 | ABS
-                 | MIN
-                 | MAX
     """
-    global vm_code
-    vm_code += code_generator.arithmetic_operations(p[1])
+    p[0] = Node.ArithmeticOperation(p[1])
 
 #Adicionar strings aqui
 def p_literal(p):
     """
     Literal : NUM
     """
-    global vm_code
+    p[0] = Node.Literal(p[1])
 
 def p_error(p):
     print('Erro sintático: ' + str(p))
@@ -44,9 +48,10 @@ def p_error(p):
 parser = ply.yacc.yacc()
 
 with open(sys.argv[1], 'r') as code:
-    for line in code:
-        parser.parse(line)
+    asd = parser.parse(code.read())
+
+print(asd)
 
 vm_code += 'STOP'
 
-print(vm_code)
+#print(vm_code)

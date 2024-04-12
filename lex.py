@@ -1,7 +1,7 @@
 import ply.lex as lex
 import sys
 
-literals = ['+', '-', '*', '/', '.', '@', '!', '?', ';', ':']
+literals = ['+', '-', '*', '/', '.', '@', '!', '?', ';', ':', '$']
 
 tokens = (
     'NUM',
@@ -11,7 +11,8 @@ tokens = (
     'NEGATE',
     'ABS',
     'MIN',
-    'MAX'
+    'MAX',
+    'NEWLINE'
 )
 
 t_NUM = r'\d+'
@@ -22,7 +23,14 @@ t_ABS = r'[aA][bB][sS]'
 t_MIN = r'[mM][iI][nN]'
 t_MAX = r'[mM][aA][xX]'
 
-t_ignore = ' \n\t'
+def t_NEWLINE(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+    t.value = '$'
+    t.type = '$'
+    return t
+
+t_ignore = ' \t'
 
 def t_error(t):
     print('Carácter ilegal: ', t.value[0])
@@ -36,3 +44,6 @@ with open(sys.argv[1], 'r') as code:
         text += line
 
 lexer.input(text)
+
+#while tok := lexer.token():
+    #print(tok)

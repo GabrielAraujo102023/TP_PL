@@ -22,6 +22,7 @@ t_MOD = r'[mM][oO][dD]'
 t_ABS = r'[aA][bB][sS]'
 t_MIN = r'[mM][iI][nN]'
 t_MAX = r'[mM][aA][xX]'
+t_NEGATE = r'[nN][eE][gG][aA][tT][eE]'
 
 def t_NEWLINE(t):
     r'\n+'

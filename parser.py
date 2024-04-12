@@ -10,19 +10,17 @@ if len(sys.argv) != 2:
 
 vm_code = 'START\n'
 
-def p_S(p):
+def p_expression_arith(p):
     """
-    S : Expression '$'
+    Expression : Expression Expression ArithmeticOp
     """
-    p[0] = Node.S(p[1])
+    p[0] = Node.Expression('exp', p[1], p[2], p[3])
 
-def p_expression(p):
+def p_expression_num(p):
     """
-    Expression : Expression ArithmeticOp
-               | Expression Literal
-               | '$'
+    Expression : NUM
     """
-    p[0] = Node.Expression('doesnt matter', p[1], p[2])
+    p[0] = Node.Number(p[1])
 
 def p_arithmeticop(p):
     """
@@ -34,13 +32,6 @@ def p_arithmeticop(p):
     """
     p[0] = Node.ArithmeticOperation(p[1])
 
-#Adicionar strings aqui
-def p_literal(p):
-    """
-    Literal : NUM
-    """
-    p[0] = Node.Literal(p[1])
-
 def p_error(p):
     print('Erro sintático: ' + str(p))
     parser.exito = False
@@ -50,8 +41,8 @@ parser = ply.yacc.yacc()
 with open(sys.argv[1], 'r') as code:
     asd = parser.parse(code.read())
 
-print(asd)
+vm_code += asd.vm_code()
 
 vm_code += 'STOP'
 
-#print(vm_code)
+print(vm_code)

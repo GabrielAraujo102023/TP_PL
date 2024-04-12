@@ -39,9 +39,9 @@ def p_error(p):
 parser = ply.yacc.yacc()
 
 with open(sys.argv[1], 'r') as code:
-    asd = parser.parse(code.read())
+    ast = parser.parse(code.read())
 
-vm_code += asd.vm_code()
+vm_code += ast.vm_code()
 
 vm_code += 'STOP'
 

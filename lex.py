@@ -1,7 +1,8 @@
 import ply.lex as lex
 import sys
+import re
 
-literals = ['+', '-', '*', '/', '.', '@', '!', '?', ';', ':', '$']
+literals = ['+', '-', '*', '/', '.', '@', '!', '?', ';', ':', '(', ')']
 
 tokens = (
     'NUM',
@@ -12,7 +13,8 @@ tokens = (
     'ABS',
     'MIN',
     'MAX',
-    'NEWLINE'
+    'NEWLINE',
+    'ARGS'
 )
 
 t_NUM = r'\d+'
@@ -24,14 +26,7 @@ t_MIN = r'[mM][iI][nN]'
 t_MAX = r'[mM][aA][xX]'
 t_NEGATE = r'[nN][eE][gG][aA][tT][eE]'
 
-def t_NEWLINE(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)
-    t.value = '$'
-    t.type = '$'
-    return t
-
-t_ignore = ' \t'
+t_ignore = ' \n\t'
 
 def t_error(t):
     print('Carácter ilegal: ', t.value[0])
@@ -44,7 +39,13 @@ with open(sys.argv[1], 'r') as code:
     for line in code:
         text += line
 
+def t_ARGS(t):
+    r'( [a-z] )+ -- [a-z]'
+    m = re.match(r'\(( [a-z] )+ -- [a-z]\)', t.value)
+    t.value = len(m.group(1).split(' '))
+
 lexer.input(text)
 
-#while tok := lexer.token():
-    #print(tok)
+if __name__ == '__main__':
+    while tok := lexer.token():
+        print(tok)

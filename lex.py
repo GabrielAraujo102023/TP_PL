@@ -10,10 +10,6 @@ tokens = (
     'ID',
     'MOD',
     'NEGATE',
-    'ABS',
-    'MIN',
-    'MAX',
-    'NEWLINE',
     'ARGS'
 )
 
@@ -21,9 +17,6 @@ t_NUM = r'\d+'
 t_VARIABLE = r'[vV][aA][rR][iI][aA][bB][lL][eE]'
 t_ID = r'[a-zA-Z]\S*'
 t_MOD = r'[mM][oO][dD]'
-t_ABS = r'[aA][bB][sS]'
-t_MIN = r'[mM][iI][nN]'
-t_MAX = r'[mM][aA][xX]'
 t_NEGATE = r'[nN][eE][gG][aA][tT][eE]'
 
 t_ignore = ' \n\t'

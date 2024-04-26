@@ -1,6 +1,5 @@
 from ply import lex
 import sys
-import re
 
 tokens = [
     'NUMBER',
@@ -8,11 +7,11 @@ tokens = [
     'DOT',
     'CHAR',
     'EMIT',
+    'DUP',
     'DOT_QUOTE',
     'WORD',
     'DOUBLE_HIFEN'
 ]
-t_ARITHMETIC_OP = r'[\+\-\*/]'
 t_DOT = r'\.'
 literals = [':', ';', '(', ')']
 
@@ -26,6 +25,11 @@ def t_DOUBLE_HIFEN(t):
     r'--'
     return t
 
+def t_ARITHMETIC_OP(t):
+    r'[\+\-\*/]|(?i)mod|(?i)negate'
+    t.value = t.value.lower()
+    return t
+
 
 def t_DOT_QUOTE(t):
     r'\." ([^"]*)"'
@@ -36,6 +40,11 @@ def t_DOT_QUOTE(t):
 def t_CHAR(t):
     r'(?i)char[ \t]+(.)'
     t.value = t.value.split()[1]
+    return t
+
+
+def t_DUP(t):
+    r'(?i)dup'
     return t
 
 

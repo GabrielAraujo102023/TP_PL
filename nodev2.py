@@ -35,7 +35,7 @@ class Program(Node):
             if isinstance(statement, Function):
                 continue  # Skip functions
             code += statement.vm_code()
-        return code + "STOP\n"
+        return code + "STOP\n\n"
 
 
 class Statement(Node):
@@ -54,7 +54,12 @@ class Function(Node):
 
     def vm_code(self):
         # arguments_str = ' '.join(self.arguments) if self.arguments else ''
-        return f"{self.word}:\n{self.function_body.vm_code()}return"
+        res = f"{self.word}:\n"
+        for i in range(-1, -self.arguments - 1, -1):
+            res += f"pushfp\nload {i}\n"
+        res += self.function_body.vm_code()
+        res += f"storeg {self.arguments}\nreturn"
+        return res
 
 
 class FunctionBody(Node):
@@ -102,6 +107,7 @@ class DefaultFunction(Node):
             case 'DOT_QUOTE': res = 'pushs "' + self.value + '"\nwrites'
             case 'EMIT': res = 'writechr'
             case 'CHAR': res = 'pushs "' + self.value + '"\nchrcode'
+            case 'DUP': res = 'dup 1'
         return res + '\n'
 
 
@@ -116,4 +122,6 @@ class Operation(Node):
             case '-': res = 'sub'
             case '*': res = 'mul'
             case '/': res = 'div'
+            case 'mod': res = 'mod'
+            case 'negate': res = 'pushi -1\nmul'
         return res + '\n'

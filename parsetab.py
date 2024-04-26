@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = "ARITHMETIC_OP CHAR DOT DOT_QUOTE DOUBLE_HIFEN EMIT NUMBER WORDprogram : statementsstatements : statement\n                  | statement statementsstatement : function\n                 | expression\n                 | default_functionfunction : ':' WORD '(' arguments DOUBLE_HIFEN WORD ')' function_body ';'\n                | ':' WORD function_body ';'function_body : statements\n    arguments : arguments WORD\n              | WORD\n    expression : literal\n                  | operationliteral : NUMBER\n               | WORDoperation : ARITHMETIC_OPdefault_function : DOT\n                        | DOT_QUOTE\n                        | CHAR\n                        | EMIT"
+_lr_signature = "ARITHMETIC_OP CHAR DOT DOT_QUOTE DOUBLE_HIFEN DUP EMIT NUMBER WORDprogram : statementsstatements : statement\n                  | statement statementsstatement : function\n                 | expression\n                 | default_functionfunction : ':' WORD '(' arguments DOUBLE_HIFEN WORD ')' function_body ';'\n                | ':' WORD function_body ';'function_body : statements\n    arguments : arguments WORD\n              | WORD\n    expression : literal\n                  | operationliteral : NUMBER\n               | WORDoperation : ARITHMETIC_OPdefault_function : DOT\n                        | DOT_QUOTE\n                        | CHAR\n                        | EMIT\n                        | DUP"
     
-_lr_action_items = {':':([0,3,4,5,6,8,9,10,11,12,13,14,15,16,18,24,28,30,],[7,7,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-14,-16,7,-8,7,-7,]),'DOT':([0,3,4,5,6,8,9,10,11,12,13,14,15,16,18,24,28,30,],[11,11,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-14,-16,11,-8,11,-7,]),'DOT_QUOTE':([0,3,4,5,6,8,9,10,11,12,13,14,15,16,18,24,28,30,],[12,12,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-14,-16,12,-8,12,-7,]),'CHAR':([0,3,4,5,6,8,9,10,11,12,13,14,15,16,18,24,28,30,],[13,13,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-14,-16,13,-8,13,-7,]),'EMIT':([0,3,4,5,6,8,9,10,11,12,13,14,15,16,18,24,28,30,],[14,14,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-14,-16,14,-8,14,-7,]),'NUMBER':([0,3,4,5,6,8,9,10,11,12,13,14,15,16,18,24,28,30,],[15,15,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-14,-16,15,-8,15,-7,]),'WORD':([0,3,4,5,6,7,8,9,10,11,12,13,14,15,16,18,19,22,23,24,25,26,28,30,],[8,8,-4,-5,-6,18,-15,-12,-13,-17,-18,-19,-20,-14,-16,8,22,-11,25,-8,-10,27,8,-7,]),'ARITHMETIC_OP':([0,3,4,5,6,8,9,10,11,12,13,14,15,16,18,24,28,30,],[16,16,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-14,-16,16,-8,16,-7,]),'$end':([1,2,3,4,5,6,8,9,10,11,12,13,14,15,16,17,24,30,],[0,-1,-2,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-14,-16,-3,-8,-7,]),';':([3,4,5,6,8,9,10,11,12,13,14,15,16,17,20,21,24,29,30,],[-2,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-14,-16,-3,24,-9,-8,30,-7,]),'(':([18,],[19,]),'DOUBLE_HIFEN':([22,23,25,],[-11,26,-10,]),')':([27,],[28,]),}
+_lr_action_items = {':':([0,3,4,5,6,8,9,10,11,12,13,14,15,16,17,19,25,29,31,],[7,7,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-21,-14,-16,7,-8,7,-7,]),'DOT':([0,3,4,5,6,8,9,10,11,12,13,14,15,16,17,19,25,29,31,],[11,11,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-21,-14,-16,11,-8,11,-7,]),'DOT_QUOTE':([0,3,4,5,6,8,9,10,11,12,13,14,15,16,17,19,25,29,31,],[12,12,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-21,-14,-16,12,-8,12,-7,]),'CHAR':([0,3,4,5,6,8,9,10,11,12,13,14,15,16,17,19,25,29,31,],[13,13,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-21,-14,-16,13,-8,13,-7,]),'EMIT':([0,3,4,5,6,8,9,10,11,12,13,14,15,16,17,19,25,29,31,],[14,14,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-21,-14,-16,14,-8,14,-7,]),'DUP':([0,3,4,5,6,8,9,10,11,12,13,14,15,16,17,19,25,29,31,],[15,15,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-21,-14,-16,15,-8,15,-7,]),'NUMBER':([0,3,4,5,6,8,9,10,11,12,13,14,15,16,17,19,25,29,31,],[16,16,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-21,-14,-16,16,-8,16,-7,]),'WORD':([0,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,23,24,25,26,27,29,31,],[8,8,-4,-5,-6,19,-15,-12,-13,-17,-18,-19,-20,-21,-14,-16,8,23,-11,26,-8,-10,28,8,-7,]),'ARITHMETIC_OP':([0,3,4,5,6,8,9,10,11,12,13,14,15,16,17,19,25,29,31,],[17,17,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-21,-14,-16,17,-8,17,-7,]),'$end':([1,2,3,4,5,6,8,9,10,11,12,13,14,15,16,17,18,25,31,],[0,-1,-2,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-21,-14,-16,-3,-8,-7,]),';':([3,4,5,6,8,9,10,11,12,13,14,15,16,17,18,21,22,25,30,31,],[-2,-4,-5,-6,-15,-12,-13,-17,-18,-19,-20,-21,-14,-16,-3,25,-9,-8,31,-7,]),'(':([19,],[20,]),'DOUBLE_HIFEN':([23,24,26,],[-11,27,-10,]),')':([28,],[29,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,],[1,]),'statements':([0,3,18,28,],[2,17,21,21,]),'statement':([0,3,18,28,],[3,3,3,3,]),'function':([0,3,18,28,],[4,4,4,4,]),'expression':([0,3,18,28,],[5,5,5,5,]),'default_function':([0,3,18,28,],[6,6,6,6,]),'literal':([0,3,18,28,],[9,9,9,9,]),'operation':([0,3,18,28,],[10,10,10,10,]),'function_body':([18,28,],[20,29,]),'arguments':([19,],[23,]),}
+_lr_goto_items = {'program':([0,],[1,]),'statements':([0,3,19,29,],[2,18,22,22,]),'statement':([0,3,19,29,],[3,3,3,3,]),'function':([0,3,19,29,],[4,4,4,4,]),'expression':([0,3,19,29,],[5,5,5,5,]),'default_function':([0,3,19,29,],[6,6,6,6,]),'literal':([0,3,19,29,],[9,9,9,9,]),'operation':([0,3,19,29,],[10,10,10,10,]),'function_body':([19,29,],[21,30,]),'arguments':([20,],[24,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -42,9 +42,10 @@ _lr_productions = [
   ('expression -> operation','expression',1,'p_expression','parserv2.py',71),
   ('literal -> NUMBER','literal',1,'p_literal','parserv2.py',76),
   ('literal -> WORD','literal',1,'p_literal','parserv2.py',77),
-  ('operation -> ARITHMETIC_OP','operation',1,'p_operation','parserv2.py',82),
-  ('default_function -> DOT','default_function',1,'p_default_function','parserv2.py',87),
-  ('default_function -> DOT_QUOTE','default_function',1,'p_default_function','parserv2.py',88),
-  ('default_function -> CHAR','default_function',1,'p_default_function','parserv2.py',89),
-  ('default_function -> EMIT','default_function',1,'p_default_function','parserv2.py',90),
+  ('operation -> ARITHMETIC_OP','operation',1,'p_operation','parserv2.py',86),
+  ('default_function -> DOT','default_function',1,'p_default_function','parserv2.py',91),
+  ('default_function -> DOT_QUOTE','default_function',1,'p_default_function','parserv2.py',92),
+  ('default_function -> CHAR','default_function',1,'p_default_function','parserv2.py',93),
+  ('default_function -> EMIT','default_function',1,'p_default_function','parserv2.py',94),
+  ('default_function -> DUP','default_function',1,'p_default_function','parserv2.py',95),
 ]

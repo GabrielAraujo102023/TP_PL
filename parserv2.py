@@ -91,7 +91,8 @@ def p_default_function(p):
     """default_function : DOT
                         | DOT_QUOTE
                         | CHAR
-                        | EMIT"""
+                        | EMIT
+                        | DUP"""
     p[0] = nodev2.DefaultFunction(p.slice[1].type, p.slice[1].value)
 
 
@@ -117,6 +118,9 @@ for func in functions.values():
 
 for var in range(init_vars):
     push_var += "pushi 0\n"
+
+if push_var:
+    push_var += '\n'
 
 vm_code = push_var + program_code + functions_code
 print(vm_code)  # Print the generated VM code from the AST

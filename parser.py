@@ -11,6 +11,7 @@ if len(sys.argv) != 2:
 # Guarda o nome das funções e o seu código VM
 functions = {}
 
+
 def vm_functions():
     global functions
     res = '\n'
@@ -19,7 +20,9 @@ def vm_functions():
         res += code + '\n'
     return res
 
+
 init_vars = 0
+
 
 def p_Expressions(p):
     """
@@ -29,7 +32,8 @@ def p_Expressions(p):
     if len(p) == 2:
         p[0] = Node.Expressions(t="single", expression=p[1])
     else:
-        p[0] = Node.Expressions(t="mult", expressions=p[1] ,expression=p[2])
+        p[0] = Node.Expressions(t="mult", expressions=p[1], expression=p[2])
+
 
 def p_expression_arith(p):
     """
@@ -37,11 +41,13 @@ def p_expression_arith(p):
     """
     p[0] = Node.Expression('exp', p[1], p[2], p[3])
 
+
 def p_expression_num(p):
     """
     Expression : NUM
     """
     p[0] = Node.Number(p[1])
+
 
 def p_arithmeticop(p):
     """
@@ -54,11 +60,34 @@ def p_arithmeticop(p):
     """
     p[0] = Node.ArithmeticOperation(p[1])
 
+
 def p_print_expression(p):
     """
     Expression : Expression '.'
     """
     p[0] = Node.Expression('print', p[1])
+
+
+def p_expression_emit(p):
+    """
+    Expression : Expression EMIT
+    """
+    p[0] = Node.Expression('emit')
+
+
+def p_expression_char(p):
+    """
+    Expression : Expression CHAR
+    """
+    p[0] = Node.Expression('char', p[1])
+
+
+def p_expression_string(p):
+    """
+    Expression : Expression STRING
+    """
+    p[0] = Node.Expression('string', p[1])
+
 
 def p_create_function(p):
     """
@@ -72,6 +101,7 @@ def p_create_function(p):
         global init_vars
         init_vars += 1
         functions[p[2]] = p[9].vm_code()
+
 
 def p_Arguments(p):
     """

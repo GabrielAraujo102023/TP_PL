@@ -1,0 +1,538 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     program -> statements
+Rule 2     statements -> statement
+Rule 3     statements -> statement statements
+Rule 4     statement -> function
+Rule 5     statement -> expression
+Rule 6     statement -> default_function
+Rule 7     function -> : WORD ( arguments DOUBLE_HIFEN WORD ) function_body ;
+Rule 8     function -> : WORD function_body ;
+Rule 9     function_body -> statements
+Rule 10    arguments -> arguments WORD
+Rule 11    arguments -> WORD
+Rule 12    expression -> literal
+Rule 13    expression -> operation
+Rule 14    literal -> NUMBER
+Rule 15    literal -> WORD
+Rule 16    operation -> ARITHMETIC_OP
+Rule 17    default_function -> DOT
+Rule 18    default_function -> DOT_QUOTE
+Rule 19    default_function -> CHAR
+Rule 20    default_function -> EMIT
+
+Terminals, with rules where they appear
+
+(                    : 7
+)                    : 7
+:                    : 7 8
+;                    : 7 8
+ARITHMETIC_OP        : 16
+CHAR                 : 19
+DOT                  : 17
+DOT_QUOTE            : 18
+DOUBLE_HIFEN         : 7
+EMIT                 : 20
+NUMBER               : 14
+WORD                 : 7 7 8 10 11 15
+error                : 
+
+Nonterminals, with rules where they appear
+
+arguments            : 7 10
+default_function     : 6
+expression           : 5
+function             : 4
+function_body        : 7 8
+literal              : 12
+operation            : 13
+program              : 0
+statement            : 2 3
+statements           : 1 3 9
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . statements
+    (2) statements -> . statement
+    (3) statements -> . statement statements
+    (4) statement -> . function
+    (5) statement -> . expression
+    (6) statement -> . default_function
+    (7) function -> . : WORD ( arguments DOUBLE_HIFEN WORD ) function_body ;
+    (8) function -> . : WORD function_body ;
+    (12) expression -> . literal
+    (13) expression -> . operation
+    (17) default_function -> . DOT
+    (18) default_function -> . DOT_QUOTE
+    (19) default_function -> . CHAR
+    (20) default_function -> . EMIT
+    (14) literal -> . NUMBER
+    (15) literal -> . WORD
+    (16) operation -> . ARITHMETIC_OP
+
+    :               shift and go to state 7
+    DOT             shift and go to state 11
+    DOT_QUOTE       shift and go to state 12
+    CHAR            shift and go to state 13
+    EMIT            shift and go to state 14
+    NUMBER          shift and go to state 15
+    WORD            shift and go to state 8
+    ARITHMETIC_OP   shift and go to state 16
+
+    program                        shift and go to state 1
+    statements                     shift and go to state 2
+    statement                      shift and go to state 3
+    function                       shift and go to state 4
+    expression                     shift and go to state 5
+    default_function               shift and go to state 6
+    literal                        shift and go to state 9
+    operation                      shift and go to state 10
+
+state 1
+
+    (0) S' -> program .
+
+
+
+state 2
+
+    (1) program -> statements .
+
+    $end            reduce using rule 1 (program -> statements .)
+
+
+state 3
+
+    (2) statements -> statement .
+    (3) statements -> statement . statements
+    (2) statements -> . statement
+    (3) statements -> . statement statements
+    (4) statement -> . function
+    (5) statement -> . expression
+    (6) statement -> . default_function
+    (7) function -> . : WORD ( arguments DOUBLE_HIFEN WORD ) function_body ;
+    (8) function -> . : WORD function_body ;
+    (12) expression -> . literal
+    (13) expression -> . operation
+    (17) default_function -> . DOT
+    (18) default_function -> . DOT_QUOTE
+    (19) default_function -> . CHAR
+    (20) default_function -> . EMIT
+    (14) literal -> . NUMBER
+    (15) literal -> . WORD
+    (16) operation -> . ARITHMETIC_OP
+
+    $end            reduce using rule 2 (statements -> statement .)
+    ;               reduce using rule 2 (statements -> statement .)
+    :               shift and go to state 7
+    DOT             shift and go to state 11
+    DOT_QUOTE       shift and go to state 12
+    CHAR            shift and go to state 13
+    EMIT            shift and go to state 14
+    NUMBER          shift and go to state 15
+    WORD            shift and go to state 8
+    ARITHMETIC_OP   shift and go to state 16
+
+    statement                      shift and go to state 3
+    statements                     shift and go to state 17
+    function                       shift and go to state 4
+    expression                     shift and go to state 5
+    default_function               shift and go to state 6
+    literal                        shift and go to state 9
+    operation                      shift and go to state 10
+
+state 4
+
+    (4) statement -> function .
+
+    :               reduce using rule 4 (statement -> function .)
+    DOT             reduce using rule 4 (statement -> function .)
+    DOT_QUOTE       reduce using rule 4 (statement -> function .)
+    CHAR            reduce using rule 4 (statement -> function .)
+    EMIT            reduce using rule 4 (statement -> function .)
+    NUMBER          reduce using rule 4 (statement -> function .)
+    WORD            reduce using rule 4 (statement -> function .)
+    ARITHMETIC_OP   reduce using rule 4 (statement -> function .)
+    $end            reduce using rule 4 (statement -> function .)
+    ;               reduce using rule 4 (statement -> function .)
+
+
+state 5
+
+    (5) statement -> expression .
+
+    :               reduce using rule 5 (statement -> expression .)
+    DOT             reduce using rule 5 (statement -> expression .)
+    DOT_QUOTE       reduce using rule 5 (statement -> expression .)
+    CHAR            reduce using rule 5 (statement -> expression .)
+    EMIT            reduce using rule 5 (statement -> expression .)
+    NUMBER          reduce using rule 5 (statement -> expression .)
+    WORD            reduce using rule 5 (statement -> expression .)
+    ARITHMETIC_OP   reduce using rule 5 (statement -> expression .)
+    $end            reduce using rule 5 (statement -> expression .)
+    ;               reduce using rule 5 (statement -> expression .)
+
+
+state 6
+
+    (6) statement -> default_function .
+
+    :               reduce using rule 6 (statement -> default_function .)
+    DOT             reduce using rule 6 (statement -> default_function .)
+    DOT_QUOTE       reduce using rule 6 (statement -> default_function .)
+    CHAR            reduce using rule 6 (statement -> default_function .)
+    EMIT            reduce using rule 6 (statement -> default_function .)
+    NUMBER          reduce using rule 6 (statement -> default_function .)
+    WORD            reduce using rule 6 (statement -> default_function .)
+    ARITHMETIC_OP   reduce using rule 6 (statement -> default_function .)
+    $end            reduce using rule 6 (statement -> default_function .)
+    ;               reduce using rule 6 (statement -> default_function .)
+
+
+state 7
+
+    (7) function -> : . WORD ( arguments DOUBLE_HIFEN WORD ) function_body ;
+    (8) function -> : . WORD function_body ;
+
+    WORD            shift and go to state 18
+
+
+state 8
+
+    (15) literal -> WORD .
+
+    :               reduce using rule 15 (literal -> WORD .)
+    DOT             reduce using rule 15 (literal -> WORD .)
+    DOT_QUOTE       reduce using rule 15 (literal -> WORD .)
+    CHAR            reduce using rule 15 (literal -> WORD .)
+    EMIT            reduce using rule 15 (literal -> WORD .)
+    NUMBER          reduce using rule 15 (literal -> WORD .)
+    WORD            reduce using rule 15 (literal -> WORD .)
+    ARITHMETIC_OP   reduce using rule 15 (literal -> WORD .)
+    $end            reduce using rule 15 (literal -> WORD .)
+    ;               reduce using rule 15 (literal -> WORD .)
+
+
+state 9
+
+    (12) expression -> literal .
+
+    :               reduce using rule 12 (expression -> literal .)
+    DOT             reduce using rule 12 (expression -> literal .)
+    DOT_QUOTE       reduce using rule 12 (expression -> literal .)
+    CHAR            reduce using rule 12 (expression -> literal .)
+    EMIT            reduce using rule 12 (expression -> literal .)
+    NUMBER          reduce using rule 12 (expression -> literal .)
+    WORD            reduce using rule 12 (expression -> literal .)
+    ARITHMETIC_OP   reduce using rule 12 (expression -> literal .)
+    $end            reduce using rule 12 (expression -> literal .)
+    ;               reduce using rule 12 (expression -> literal .)
+
+
+state 10
+
+    (13) expression -> operation .
+
+    :               reduce using rule 13 (expression -> operation .)
+    DOT             reduce using rule 13 (expression -> operation .)
+    DOT_QUOTE       reduce using rule 13 (expression -> operation .)
+    CHAR            reduce using rule 13 (expression -> operation .)
+    EMIT            reduce using rule 13 (expression -> operation .)
+    NUMBER          reduce using rule 13 (expression -> operation .)
+    WORD            reduce using rule 13 (expression -> operation .)
+    ARITHMETIC_OP   reduce using rule 13 (expression -> operation .)
+    $end            reduce using rule 13 (expression -> operation .)
+    ;               reduce using rule 13 (expression -> operation .)
+
+
+state 11
+
+    (17) default_function -> DOT .
+
+    :               reduce using rule 17 (default_function -> DOT .)
+    DOT             reduce using rule 17 (default_function -> DOT .)
+    DOT_QUOTE       reduce using rule 17 (default_function -> DOT .)
+    CHAR            reduce using rule 17 (default_function -> DOT .)
+    EMIT            reduce using rule 17 (default_function -> DOT .)
+    NUMBER          reduce using rule 17 (default_function -> DOT .)
+    WORD            reduce using rule 17 (default_function -> DOT .)
+    ARITHMETIC_OP   reduce using rule 17 (default_function -> DOT .)
+    $end            reduce using rule 17 (default_function -> DOT .)
+    ;               reduce using rule 17 (default_function -> DOT .)
+
+
+state 12
+
+    (18) default_function -> DOT_QUOTE .
+
+    :               reduce using rule 18 (default_function -> DOT_QUOTE .)
+    DOT             reduce using rule 18 (default_function -> DOT_QUOTE .)
+    DOT_QUOTE       reduce using rule 18 (default_function -> DOT_QUOTE .)
+    CHAR            reduce using rule 18 (default_function -> DOT_QUOTE .)
+    EMIT            reduce using rule 18 (default_function -> DOT_QUOTE .)
+    NUMBER          reduce using rule 18 (default_function -> DOT_QUOTE .)
+    WORD            reduce using rule 18 (default_function -> DOT_QUOTE .)
+    ARITHMETIC_OP   reduce using rule 18 (default_function -> DOT_QUOTE .)
+    $end            reduce using rule 18 (default_function -> DOT_QUOTE .)
+    ;               reduce using rule 18 (default_function -> DOT_QUOTE .)
+
+
+state 13
+
+    (19) default_function -> CHAR .
+
+    :               reduce using rule 19 (default_function -> CHAR .)
+    DOT             reduce using rule 19 (default_function -> CHAR .)
+    DOT_QUOTE       reduce using rule 19 (default_function -> CHAR .)
+    CHAR            reduce using rule 19 (default_function -> CHAR .)
+    EMIT            reduce using rule 19 (default_function -> CHAR .)
+    NUMBER          reduce using rule 19 (default_function -> CHAR .)
+    WORD            reduce using rule 19 (default_function -> CHAR .)
+    ARITHMETIC_OP   reduce using rule 19 (default_function -> CHAR .)
+    $end            reduce using rule 19 (default_function -> CHAR .)
+    ;               reduce using rule 19 (default_function -> CHAR .)
+
+
+state 14
+
+    (20) default_function -> EMIT .
+
+    :               reduce using rule 20 (default_function -> EMIT .)
+    DOT             reduce using rule 20 (default_function -> EMIT .)
+    DOT_QUOTE       reduce using rule 20 (default_function -> EMIT .)
+    CHAR            reduce using rule 20 (default_function -> EMIT .)
+    EMIT            reduce using rule 20 (default_function -> EMIT .)
+    NUMBER          reduce using rule 20 (default_function -> EMIT .)
+    WORD            reduce using rule 20 (default_function -> EMIT .)
+    ARITHMETIC_OP   reduce using rule 20 (default_function -> EMIT .)
+    $end            reduce using rule 20 (default_function -> EMIT .)
+    ;               reduce using rule 20 (default_function -> EMIT .)
+
+
+state 15
+
+    (14) literal -> NUMBER .
+
+    :               reduce using rule 14 (literal -> NUMBER .)
+    DOT             reduce using rule 14 (literal -> NUMBER .)
+    DOT_QUOTE       reduce using rule 14 (literal -> NUMBER .)
+    CHAR            reduce using rule 14 (literal -> NUMBER .)
+    EMIT            reduce using rule 14 (literal -> NUMBER .)
+    NUMBER          reduce using rule 14 (literal -> NUMBER .)
+    WORD            reduce using rule 14 (literal -> NUMBER .)
+    ARITHMETIC_OP   reduce using rule 14 (literal -> NUMBER .)
+    $end            reduce using rule 14 (literal -> NUMBER .)
+    ;               reduce using rule 14 (literal -> NUMBER .)
+
+
+state 16
+
+    (16) operation -> ARITHMETIC_OP .
+
+    :               reduce using rule 16 (operation -> ARITHMETIC_OP .)
+    DOT             reduce using rule 16 (operation -> ARITHMETIC_OP .)
+    DOT_QUOTE       reduce using rule 16 (operation -> ARITHMETIC_OP .)
+    CHAR            reduce using rule 16 (operation -> ARITHMETIC_OP .)
+    EMIT            reduce using rule 16 (operation -> ARITHMETIC_OP .)
+    NUMBER          reduce using rule 16 (operation -> ARITHMETIC_OP .)
+    WORD            reduce using rule 16 (operation -> ARITHMETIC_OP .)
+    ARITHMETIC_OP   reduce using rule 16 (operation -> ARITHMETIC_OP .)
+    $end            reduce using rule 16 (operation -> ARITHMETIC_OP .)
+    ;               reduce using rule 16 (operation -> ARITHMETIC_OP .)
+
+
+state 17
+
+    (3) statements -> statement statements .
+
+    $end            reduce using rule 3 (statements -> statement statements .)
+    ;               reduce using rule 3 (statements -> statement statements .)
+
+
+state 18
+
+    (7) function -> : WORD . ( arguments DOUBLE_HIFEN WORD ) function_body ;
+    (8) function -> : WORD . function_body ;
+    (9) function_body -> . statements
+    (2) statements -> . statement
+    (3) statements -> . statement statements
+    (4) statement -> . function
+    (5) statement -> . expression
+    (6) statement -> . default_function
+    (7) function -> . : WORD ( arguments DOUBLE_HIFEN WORD ) function_body ;
+    (8) function -> . : WORD function_body ;
+    (12) expression -> . literal
+    (13) expression -> . operation
+    (17) default_function -> . DOT
+    (18) default_function -> . DOT_QUOTE
+    (19) default_function -> . CHAR
+    (20) default_function -> . EMIT
+    (14) literal -> . NUMBER
+    (15) literal -> . WORD
+    (16) operation -> . ARITHMETIC_OP
+
+    (               shift and go to state 19
+    :               shift and go to state 7
+    DOT             shift and go to state 11
+    DOT_QUOTE       shift and go to state 12
+    CHAR            shift and go to state 13
+    EMIT            shift and go to state 14
+    NUMBER          shift and go to state 15
+    WORD            shift and go to state 8
+    ARITHMETIC_OP   shift and go to state 16
+
+    function_body                  shift and go to state 20
+    statements                     shift and go to state 21
+    statement                      shift and go to state 3
+    function                       shift and go to state 4
+    expression                     shift and go to state 5
+    default_function               shift and go to state 6
+    literal                        shift and go to state 9
+    operation                      shift and go to state 10
+
+state 19
+
+    (7) function -> : WORD ( . arguments DOUBLE_HIFEN WORD ) function_body ;
+    (10) arguments -> . arguments WORD
+    (11) arguments -> . WORD
+
+    WORD            shift and go to state 22
+
+    arguments                      shift and go to state 23
+
+state 20
+
+    (8) function -> : WORD function_body . ;
+
+    ;               shift and go to state 24
+
+
+state 21
+
+    (9) function_body -> statements .
+
+    ;               reduce using rule 9 (function_body -> statements .)
+
+
+state 22
+
+    (11) arguments -> WORD .
+
+    DOUBLE_HIFEN    reduce using rule 11 (arguments -> WORD .)
+    WORD            reduce using rule 11 (arguments -> WORD .)
+
+
+state 23
+
+    (7) function -> : WORD ( arguments . DOUBLE_HIFEN WORD ) function_body ;
+    (10) arguments -> arguments . WORD
+
+    DOUBLE_HIFEN    shift and go to state 26
+    WORD            shift and go to state 25
+
+
+state 24
+
+    (8) function -> : WORD function_body ; .
+
+    :               reduce using rule 8 (function -> : WORD function_body ; .)
+    DOT             reduce using rule 8 (function -> : WORD function_body ; .)
+    DOT_QUOTE       reduce using rule 8 (function -> : WORD function_body ; .)
+    CHAR            reduce using rule 8 (function -> : WORD function_body ; .)
+    EMIT            reduce using rule 8 (function -> : WORD function_body ; .)
+    NUMBER          reduce using rule 8 (function -> : WORD function_body ; .)
+    WORD            reduce using rule 8 (function -> : WORD function_body ; .)
+    ARITHMETIC_OP   reduce using rule 8 (function -> : WORD function_body ; .)
+    $end            reduce using rule 8 (function -> : WORD function_body ; .)
+    ;               reduce using rule 8 (function -> : WORD function_body ; .)
+
+
+state 25
+
+    (10) arguments -> arguments WORD .
+
+    DOUBLE_HIFEN    reduce using rule 10 (arguments -> arguments WORD .)
+    WORD            reduce using rule 10 (arguments -> arguments WORD .)
+
+
+state 26
+
+    (7) function -> : WORD ( arguments DOUBLE_HIFEN . WORD ) function_body ;
+
+    WORD            shift and go to state 27
+
+
+state 27
+
+    (7) function -> : WORD ( arguments DOUBLE_HIFEN WORD . ) function_body ;
+
+    )               shift and go to state 28
+
+
+state 28
+
+    (7) function -> : WORD ( arguments DOUBLE_HIFEN WORD ) . function_body ;
+    (9) function_body -> . statements
+    (2) statements -> . statement
+    (3) statements -> . statement statements
+    (4) statement -> . function
+    (5) statement -> . expression
+    (6) statement -> . default_function
+    (7) function -> . : WORD ( arguments DOUBLE_HIFEN WORD ) function_body ;
+    (8) function -> . : WORD function_body ;
+    (12) expression -> . literal
+    (13) expression -> . operation
+    (17) default_function -> . DOT
+    (18) default_function -> . DOT_QUOTE
+    (19) default_function -> . CHAR
+    (20) default_function -> . EMIT
+    (14) literal -> . NUMBER
+    (15) literal -> . WORD
+    (16) operation -> . ARITHMETIC_OP
+
+    :               shift and go to state 7
+    DOT             shift and go to state 11
+    DOT_QUOTE       shift and go to state 12
+    CHAR            shift and go to state 13
+    EMIT            shift and go to state 14
+    NUMBER          shift and go to state 15
+    WORD            shift and go to state 8
+    ARITHMETIC_OP   shift and go to state 16
+
+    function_body                  shift and go to state 29
+    statements                     shift and go to state 21
+    statement                      shift and go to state 3
+    function                       shift and go to state 4
+    expression                     shift and go to state 5
+    default_function               shift and go to state 6
+    literal                        shift and go to state 9
+    operation                      shift and go to state 10
+
+state 29
+
+    (7) function -> : WORD ( arguments DOUBLE_HIFEN WORD ) function_body . ;
+
+    ;               shift and go to state 30
+
+
+state 30
+
+    (7) function -> : WORD ( arguments DOUBLE_HIFEN WORD ) function_body ; .
+
+    :               reduce using rule 7 (function -> : WORD ( arguments DOUBLE_HIFEN WORD ) function_body ; .)
+    DOT             reduce using rule 7 (function -> : WORD ( arguments DOUBLE_HIFEN WORD ) function_body ; .)
+    DOT_QUOTE       reduce using rule 7 (function -> : WORD ( arguments DOUBLE_HIFEN WORD ) function_body ; .)
+    CHAR            reduce using rule 7 (function -> : WORD ( arguments DOUBLE_HIFEN WORD ) function_body ; .)
+    EMIT            reduce using rule 7 (function -> : WORD ( arguments DOUBLE_HIFEN WORD ) function_body ; .)
+    NUMBER          reduce using rule 7 (function -> : WORD ( arguments DOUBLE_HIFEN WORD ) function_body ; .)
+    WORD            reduce using rule 7 (function -> : WORD ( arguments DOUBLE_HIFEN WORD ) function_body ; .)
+    ARITHMETIC_OP   reduce using rule 7 (function -> : WORD ( arguments DOUBLE_HIFEN WORD ) function_body ; .)
+    $end            reduce using rule 7 (function -> : WORD ( arguments DOUBLE_HIFEN WORD ) function_body ; .)
+    ;               reduce using rule 7 (function -> : WORD ( arguments DOUBLE_HIFEN WORD ) function_body ; .)
+

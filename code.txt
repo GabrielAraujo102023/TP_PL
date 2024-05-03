@@ -1,1 +1,2 @@
-2 2 + 3 3 *
+: maior2 > if swap . ." é o maior " else . ." é o maior " then ;
+77 156 maior2

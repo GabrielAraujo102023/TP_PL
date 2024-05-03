@@ -33,9 +33,9 @@ class Program(Node):
         code = "START\n"
         for statement in self.statements:
             if isinstance(statement, Function):
-                continue  # Skip functions
+                continue
             code += statement.vm_code()
-        return code + "STOP\n\n"
+        return code + "STOP\n"
 
 
 class Statement(Node):
@@ -55,11 +55,13 @@ class Function(Node):
     def vm_code(self):
         # arguments_str = ' '.join(self.arguments) if self.arguments else ''
         res = f"{self.word}:\n"
-        for i in range(-1, -self.arguments - 1, -1):
-            res += f"pushfp\nload {i}\n"
+        if self.arguments:
+            for i in range(-1, -self.arguments - 1, -1):
+                res += f"pushfp\nload {i}\n"
         res += self.function_body.vm_code()
-        res += f"storeg {self.arguments}\nreturn"
-        return res
+        if self.arguments:
+            res += f"storeg {self.arguments}\n"
+        return res + 'return'
 
 
 class FunctionBody(Node):
@@ -73,29 +75,60 @@ class FunctionBody(Node):
         return code
 
 
-class Literal(Node):
+class Num(Node):
+    def __init__(self, value):
+        self.value = value
+        self.type = type(value).__name__
+
+    def vm_code(self):
+        res = ''
+        if isinstance(self.value, int):
+            res += f"pushi {self.value}"
+        elif isinstance(self.value, float):
+            res += f"pushf {self.value}"
+        return res + '\n'
+
+
+class Word(Node):
     def __init__(self, value, function=None):
         self.value = value
         self.function = function
 
     def vm_code(self):
         res = ''
-        if isinstance(self.value, int):
-            res += f"pushi {self.value}\n"
-        elif self.function:
+        if self.function:
             args = self.function.arguments
-            for i in range(args):
-                res += f'storeg {i}\n'
-            for i in range(args):
-                res += f'pushg {i}\n'
-            res += f"pusha {self.value}\ncall\npop {args}\npushg {args}\n"
+            if args:
+                for i in range(args):
+                    res += f'storeg {i}\n'
+                for i in range(args):
+                    res += f'pushg {i}\n'
+            res += f"pusha {self.value}\ncall" #\npop {args}\npushg {args}
         else:
-            res += f"pushs {self.value}\n"
+            res += f"pushs {self.value}"
+        return res + '\n'
 
-        return res
+
+class ConditionConstruct(Node):
+    def __init__(self, condition, true_statements, if_number, false_statements=None):
+        self.condition = condition
+        self.true_statements = true_statements
+        self.false_statements = false_statements
+        self.if_number = if_number
+
+    def vm_code(self):
+        code = self.condition.vm_code()
+        code += "jz else1\n"
+        for statement in self.true_statements:
+            code += statement.vm_code()
+        code += "jump endif1\nelse1:"
+        for statement in self.false_statements:
+            code += statement.vm_code()
+        code += "endif1:"
+        return code + '\n'
 
 
-class DefaultFunction(Node):
+class ForthFunction(Node):
     def __init__(self, type, value=None):
         self.type = type
         self.value = value
@@ -107,21 +140,63 @@ class DefaultFunction(Node):
             case 'DOT_QUOTE': res = 'pushs "' + self.value + '"\nwrites'
             case 'EMIT': res = 'writechr'
             case 'CHAR': res = 'pushs "' + self.value + '"\nchrcode'
-            case 'DUP': res = 'dup 1'
+            case 'DUP': res = f'dup {self.value}'
+            case 'SWAP': res = 'swap'
+            case 'CR': res = 'writeln'
+            case 'DROP': res = f'pop {self.value}'
         return res + '\n'
 
 
 class Operation(Node):
-    def __init__(self, operator):
+    def __init__(self, operator, op_type):
         self.operator = operator
+        self.operand_type = op_type
 
     def vm_code(self):
-        res = ''
         match self.operator:
-            case '+': res = 'add'
-            case '-': res = 'sub'
-            case '*': res = 'mul'
-            case '/': res = 'div'
+            case '+':
+                if self.operand_type == "float":
+                    res = 'fadd'
+                else:
+                    res = 'add'
+            case '-':
+                if self.operand_type == "float":
+                    res = 'fsub'
+                else:
+                    res = 'sub'
+            case '*':
+                if self.operand_type == "float":
+                    res = 'fmul'
+                else:
+                    res = 'mul'
+            case '/':
+                if self.operand_type == "float":
+                    res = 'fdiv'
+                else:
+                    res = 'div'
             case 'mod': res = 'mod'
             case 'negate': res = 'pushi -1\nmul'
+
+        return res + '\n'
+
+
+class Comparison(Node):
+    def __init__(self, operator, op_type):
+        self.operator = operator
+        self.op_type = op_type
+
+    def vm_code(self):
+        match self.operator:
+            case '>':
+                if self.op_type == "float":
+                    res = 'fsup'
+                else:
+                    res = 'sup'
+            case '<':
+                if self.op_type == 'float':
+                    res = 'finf'
+                else:
+                    res = 'inf'
+            case '=': res = 'equal'
+
         return res + '\n'

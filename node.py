@@ -271,6 +271,7 @@ class Operation(Node):
         self.operand_type = op_type
 
     def vm_code(self):
+        res = ''
         match self.operator:
             case '+':
                 if self.operand_type == "float":
@@ -307,6 +308,7 @@ class Comparison(Node):
         self.op_type = op_type
 
     def vm_code(self):
+        res = ''
         match self.operator:
             case '>':
                 if self.op_type == "float":

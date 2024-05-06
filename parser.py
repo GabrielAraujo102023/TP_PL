@@ -1,117 +1,175 @@
-import ply.yacc
-from lex import tokens, literals
+from ply import yacc
+from lexer import tokens, literals
 import sys
-import vm_code_generator as code_generator
-import Node
+import node
 
 if len(sys.argv) != 2:
     print('Erro: Introduza path a um ficheiro com código FORTH.', file=sys.stderr)
     sys.exit(-1)
 
-# Guarda o nome das funções e o seu código VM
+previous_num = None
 functions = {}
+variables = {}
 
 
-def vm_functions():
-    global functions
-    res = '\n'
-    for name, code in functions.items():
-        res += name + ':\n'
-        res += code + '\n'
-    return res
+def p_program(p):
+    """program : statements"""
+    p[0] = node.Program(p[1])
 
 
-init_vars = 0
-
-
-def p_Expressions(p):
+def p_statements(p):
     """
-    Expressions : Expressions Expression
-                | Expression
+    statements : statement
+               | statement statements
     """
     if len(p) == 2:
-        p[0] = Node.Expressions(t="single", expression=p[1])
+        p[0] = [p[1]]
     else:
-        p[0] = Node.Expressions(t="mult", expressions=p[1], expression=p[2])
+        p[0] = [p[1]] + p[2]
 
 
-def p_expression_arith(p):
+def p_statement(p):
     """
-    Expression : Expression Expression ArithmeticOp
+    statement : function
+              | loop
+              | conditional
+              | operation
+              | comparison
+              | forth_function
+              | words
+              | num
+              | variable
     """
-    p[0] = Node.Expression('exp', p[1], p[2], p[3])
+    p[0] = p[1]
+    
+
+def p_variable(p):
+    """variable : VARIABLE
+                | CONSTANT"""
+    global variables
+    name = p.slice[1].value
+    if name in variables:
+        print(f"Error: Two variables declared with the same name: {p[2]}", file=sys.stderr)
+        sys.exit(0)
+
+    if p.slice[1].type == 'VARIABLE':
+        p[0] = node.Variable(name)
+    else:
+        p[0] = node.Constant(name)
+
+    variables[name] = [p[0]]
 
 
-def p_expression_num(p):
-    """
-    Expression : NUM
-    """
-    p[0] = Node.Number(p[1])
+def p_loop(p):
+    """loop : DO statements LOOP
+            | DO statements PLUS_LOOP
+            | BEGIN statements UNTIL
+            | BEGIN statements AGAIN
+            | BEGIN statements WHILE statements REPEAT"""
+    if p[3].lower() == 'until':
+        p[0] = node.BeginUntil(p[2])
+    elif p[3].lower() == 'again':
+        p[0] = node.BeginAgain(p[2])
+    elif p[5] == 'repeat':
+        p[0] = node.BeginWhileRepeat(p[2], p[4])
+    else:
+        p[0] = node.Loop(p[2], p[3])
 
 
-def p_arithmeticop(p):
+def p_conditional(p):
     """
-    ArithmeticOp : '+'
-                 | '-'
-                 | '*'
-                 | '/'
-                 | MOD
-                 | NEGATE
+    conditional : IF statements THEN
+                | IF statements ELSE statements THEN
     """
-    p[0] = Node.ArithmeticOperation(p[1])
+    if len(p) == 4:
+        p[0] = node.Conditional(p[2])
+    else:
+        p[0] = node.Conditional(p[2], p[4])
 
 
-def p_print_expression(p):
+def p_function(p):
     """
-    Expression : Expression '.'
+    function : ':' WORD '(' arguments DOUBLE_HIFEN WORD ')' statements ';'
+             | ':' WORD statements ';'
     """
-    p[0] = Node.Expression('print', p[1])
-
-
-def p_expression_emit(p):
-    """
-    Expression : Expression EMIT
-    """
-    p[0] = Node.Expression('emit')
-
-
-def p_expression_char(p):
-    """
-    Expression : Expression CHAR
-    """
-    p[0] = Node.Expression('char', p[1])
-
-
-def p_expression_string(p):
-    """
-    Expression : Expression STRING
-    """
-    p[0] = Node.Expression('string', p[1])
-
-
-def p_create_function(p):
-    """
-    Expression : ':' ID '(' Arguments '-' '-' ID ')' Expressions ';'
-    """
-    p[0] = Node.Node()
+    global functions
+    
     if p[2] in functions.keys():
-        print(f"Erro: Duas funções declaradas com o mesmo nome: {p[2]}", file=sys.stderr)
+        print(f"Error: Two functions declared with the same name: {p[2]}", file=sys.stderr)
         sys.exit(0)
     else:
-        global init_vars
-        init_vars += 1
-        functions[p[2]] = p[9].vm_code()
+        # p[0] = node.Node()
+        if len(p) > 5:
+            p[0] = node.Function(p[2], p[8], len(p[4]))
+        else:
+            p[0] = node.Function(p[2], p[3])
+
+        functions[p[2]] = p[0]
 
 
-def p_Arguments(p):
+def p_arguments(p):
     """
-    Arguments : Arguments ID
-              | ID
+    arguments : arguments WORD
+              | WORD
     """
     if len(p) == 2:
-        p[0] = '1'
+        p[0] = [p[1]]
     else:
-        p[0] = str(int(p[1]) + 1)
+        p[0] = p[1] + [p[2]]
+
+
+def p_operation(p):
+    """operation : ARITHMETIC_OP"""
+    p[0] = node.Operation(p[1], previous_num)
+
+
+def p_comparison(p):
+    """comparison : COMPARISON"""
+    p[0] = node.Comparison(p[1], previous_num)
+
+
+def p_num(p):
+    """
+    num : INT
+        | FLOAT
+    """
+    p[0] = node.Num(p[1])
+    global previous_num
+    previous_num = p[0].type
+
+
+def p_words(p):
+    """
+    words : WORD
+    """
+    global functions, variables
+
+    if p[1] in functions:
+        p[0] = node.Word(p[1], functions[p[1]])
+    elif p[1] in variables:
+        p[0] = node.Word(p[1])
+        variables[p[1]].append(p[0])
+
+
+def p_forth_function(p):
+    """
+    forth_function : DOT
+                   | DOT_QUOTE
+                   | CHAR
+                   | EMIT
+                   | DUP
+                   | SWAP
+                   | CR
+                   | DROP
+                   | ROT
+                   | INC_VAR
+                   | SPACE
+                   | OVER
+                   | '!'
+                   | '@'
+                   | '?'
+    """
+    p[0] = node.ForthFunction(p.slice[1].type, p.slice[1].value)
 
 
 def p_error(p):
@@ -119,23 +177,7 @@ def p_error(p):
     parser.exito = False
 
 
-# Parsing
-parser = ply.yacc.yacc()
+parser = yacc.yacc()
 
 with open(sys.argv[1], 'r') as forth_file:
     ast = parser.parse(forth_file.read())
-
-vm_code = ''
-
-for i in range(init_vars):
-    vm_code += 'PUSHI 0\n'
-
-vm_code += 'START\n'
-
-vm_code += ast.vm_code()
-
-vm_code += 'STOP'
-
-vm_code += vm_functions()
-
-print(vm_code)

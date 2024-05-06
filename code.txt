@@ -1,2 +1,25 @@
-: maior2 > if swap . ." é o maior " else . ." é o maior " then ;
-77 156 maior2
+VARIABLE num
+VARIABLE res
+
+: calculo ( a b -- m ) * ;
+
+: fatorial ( b -- m )
+    num !
+    0 res !
+    begin
+    res @ 0=
+    if
+        num @ dup 1 - calculo res !
+        2 negate num +!
+    else
+        num @ res @ calculo res !
+        1 negate num +!
+    then
+    num @ 1 =
+    until ;
+
+5 fatorial
+cr
+." calculo do fatorial de 5" cr
+." resultado = "
+res ?

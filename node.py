@@ -116,7 +116,7 @@ class Variable(Node):
         self.sp = None
 
     def vm_code(self):
-        res = 'alloc 1\npushi 0\nstore 0'
+        res = 'alloc 1\npop 1'
         return res + '\n'
 
 

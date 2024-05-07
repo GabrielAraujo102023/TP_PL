@@ -74,12 +74,7 @@ functions_code = ""
 push_vars = ""
 for function in functions.values():
     if function.arguments:
-        if function.arguments == 1:
-            push_vars += "alloc 1\npushi 0\nstore 0\n"
-        else:
-            push_vars += f"alloc {function.arguments}\npushi 0\nstore 0\n"
-            for i in range(1, function.arguments):
-                push_vars += f"pushst {function.args_sp}\npushi 0\nstore {i}\n"
+        push_vars += f"alloc {function.arguments}\npop 1\n"
 
     functions_code += function.vm_code()
 

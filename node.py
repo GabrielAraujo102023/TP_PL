@@ -53,13 +53,17 @@ class Function(Node):
         super().__init__()
         self.word = word
         self.arguments = arguments
+        self.args_sp = None
         self.statements = statements
 
     def vm_code(self):
         res = f"\n{self.word}:\n"
         if self.arguments:
-            for i in range(-1, -self.arguments - 1, -1):
-                res += f"pushl {i}\n"
+            if self.arguments == 1:
+                res += f"pushst {self.args_sp}\nload 0\n"
+            else:
+                for i in range(self.arguments - 1, - 1, -1):
+                    res += f"pushst {self.args_sp}\nload {i}\n"
 
         for statement in self.statements:
             res += statement.vm_code()
@@ -93,6 +97,10 @@ class Word(Node):
     def vm_code(self):
         res = ''
         if self.function:
+            f = self.function
+            if f.arguments:
+                for i in range(f.arguments):
+                    res += f"pushst {f.args_sp}\nswap\nstore {i}\n"
             res += f"pusha {self.value}\ncall"
         elif self.sp is not None:
             res += f"pushst {self.sp}"
@@ -105,6 +113,7 @@ class Variable(Node):
     def __init__(self, variable_id):
         super().__init__()
         self.variable_id = variable_id
+        self.sp = None
 
     def vm_code(self):
         res = 'alloc 1\npushi 0\nstore 0'
@@ -115,6 +124,7 @@ class Constant(Node):
     def __init__(self, constant_id):
         super().__init__()
         self.constant_id = constant_id
+        self.sp = None
 
     def vm_code(self):
         res = 'alloc 1\nswap\nstore 0'

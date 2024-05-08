@@ -12,7 +12,9 @@ class Node:
         indent = '  ' * depth
         tree_str = indent + self.__class__.__name__ + '\n'
         for attr, value in self.__dict__.items():
-            if isinstance(value, Node):
+            if attr == 'function' and value is not None:
+                tree_str += indent + '  ' + 'function: ' + value.word + '\n'
+            elif isinstance(value, Node):
                 tree_str += value.print_tree(depth + 1)
             elif isinstance(value, list):
                 for item in value:
@@ -91,7 +93,7 @@ class Word(Node):
         super().__init__()
         self.value = value
         self.function = function
-        self.sp = None
+        self.var_sp = None
         self.is_constant = None
 
     def vm_code(self):
@@ -102,8 +104,8 @@ class Word(Node):
                 for i in range(f.arguments):
                     res += f"pushst {f.args_sp}\nswap\nstore {i}\n"
             res += f"pusha {self.value}\ncall"
-        elif self.sp is not None:
-            res += f"pushst {self.sp}"
+        elif self.var_sp is not None:
+            res += f"pushst {self.var_sp}"
             if self.is_constant:
                 res += f'\nload 0'
         return res + '\n'
@@ -113,7 +115,7 @@ class Variable(Node):
     def __init__(self, variable_id):
         super().__init__()
         self.variable_id = variable_id
-        self.sp = None
+        self.var_sp = None
 
     def vm_code(self):
         res = 'alloc 1\npop 1'
@@ -124,7 +126,7 @@ class Constant(Node):
     def __init__(self, constant_id):
         super().__init__()
         self.constant_id = constant_id
-        self.sp = None
+        self.var_sp = None
 
     def vm_code(self):
         res = 'alloc 1\nswap\nstore 0'
@@ -140,33 +142,38 @@ class Conditional(Node):
 
     def vm_code(self):
         code = f"jz else{self.conditional_id}\n"
+
         for statement in self.true_statements:
             code += statement.vm_code()
+
         code += f"jump endif{self.conditional_id}\nelse{self.conditional_id}:\n"
+
         if self.false_statements:
             for statement in self.false_statements:
                 code += statement.vm_code()
+
         code += f"endif{self.conditional_id}:"
+
         return code + '\n'
 
 
-class Loop(Node):
+class DoLoop(Node):
     def __init__(self, statements, loop_type):
         super().__init__()
         self.loop_id = None
         self.loop_type = loop_type
-        self.limit_p = None
-        self.index_p = None
+        self.limit_sp = None
+        self.index_sp = None
         self.statements = statements
 
     def vm_code(self):
-        res = f"storeg {self.index_p}\nstoreg {self.limit_p}\nwhile{self.loop_id}:\npushg {self.index_p}\npushg {self.limit_p}\ninf\njz endwhile{self.loop_id}\n"
+        res = f"storeg {self.index_sp}\nstoreg {self.limit_sp}\nwhile{self.loop_id}:\npushg {self.index_sp}\npushg {self.limit_sp}\ninf\njz endwhile{self.loop_id}\n"
         for statement in self.statements:
             res += statement.vm_code()
         if self.loop_type == 'loop':
-            res += f"pushg {self.index_p}\npushi 1\nadd\nstoreg {self.index_p}\njump while{self.loop_id}\nendwhile{self.loop_id}:"
+            res += f"pushg {self.index_sp}\npushi 1\nadd\nstoreg {self.index_sp}\njump while{self.loop_id}\nendwhile{self.loop_id}:"
         else:
-            res += f"pushg {self.index_p}\nadd\nstoreg {self.index_p}\njump while{self.loop_id}\nendwhile{self.loop_id}:"
+            res += f"pushg {self.index_sp}\nadd\nstoreg {self.index_sp}\njump while{self.loop_id}\nendwhile{self.loop_id}:"
 
         return res + '\n'
 
@@ -263,6 +270,8 @@ class ForthFunction(Node):
                 res = f'storeg {self.value}\nswap\npushg {self.value}\nswap'
             case 'SPACE':
                 res = 'pushs " " writes'
+            case 'KEY':
+                res = 'read\natoi'
             case '!':
                 res = 'swap\nstore 0'
             case '@':

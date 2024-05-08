@@ -1,0 +1,3 @@
+: funcao ( n ) ." Const = " . ;
+5 funcao
+

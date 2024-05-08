@@ -1,5 +1,6 @@
 VARIABLE num
 VARIABLE res
+VARIABLE text
 
 : calculo ( a b -- m ) * ;
 
@@ -18,8 +19,10 @@ VARIABLE res
     num @ 1 =
     until ;
 
-5 fatorial
+." Inserir um inteiro: " key cr
+text !
+text @ fatorial
 cr
-." calculo do fatorial de 5" cr
+." calculo do fatorial de " text ? cr
 ." resultado = "
 res ?

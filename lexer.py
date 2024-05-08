@@ -17,6 +17,7 @@ tokens = [
     'REPEAT',
     'DROP',
     'DUP',
+    'KEY',
     'SWAP',
     'CR',
     'IF',
@@ -45,6 +46,11 @@ def t_newline(t):
 
 def t_DOUBLE_HIFEN(t):
     r'--'
+    return t
+
+
+def t_COMPARISON(t):
+    r'<>|0=|0<|0>|>|<|=|(?i)and|(?i)or'
     return t
 
 
@@ -88,11 +94,6 @@ def t_ARITHMETIC_OP(t):
     return t
 
 
-def t_COMPARISON(t):
-    r'<>|0=|0<|0>|>|<|=|(?i)and|(?i)or'
-    return t
-
-
 def t_DOT_QUOTE(t):
     r'\." ([^"]*)"'
     t.value = t.value[3:-1]
@@ -101,6 +102,11 @@ def t_DOT_QUOTE(t):
 
 def t_BEGIN(t):
     r'(?i)begin'
+    return t
+
+
+def t_KEY(t):
+    r'(?i)key'
     return t
 
 

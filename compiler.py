@@ -6,6 +6,9 @@ if len(sys.argv) != 2:
     print('Erro: Introduza path a um ficheiro com código FORTH.', file=sys.stderr)
     sys.exit(-1)
 
+# print(ast)
+# print("------------------------------------------------------------------")
+
 
 def pre_process_functions(nodes, rp=0, cc=0, lc=0, sp=0):
     for n in nodes:
@@ -30,11 +33,11 @@ def process_ast(nodes, rp, cc, lc, sp):
             rp, cc, lc, sp = process_ast(n.true_statements, rp, cc, lc, sp)
             if n.false_statements:
                 rp, cc, lc, sp = process_ast(n.false_statements, rp, cc, lc, sp)
-        elif isinstance(n, node.Loop):
+        elif isinstance(n, node.DoLoop):
             n.loop_id = lc
-            n.index_p = rp
+            n.index_sp = rp
             rp += 1
-            n.limit_p = rp
+            n.limit_sp = rp
             rp += 1
             lc += 1
             rp, cc, lc, sp = process_ast(n.statements, rp, cc, lc, sp)
@@ -48,12 +51,12 @@ def process_ast(nodes, rp, cc, lc, sp):
             rp, cc, lc, sp = process_ast(n.conditions, rp, cc, lc, sp)
             rp, cc, lc, sp = process_ast(n.statements, rp, cc, lc, sp)
         elif isinstance(n, node.Variable) or isinstance(n, node.Constant):
-            n.sp = sp
+            n.var_sp = sp
             sp += 1
         elif isinstance(n, node.Word) and n.value in variables:
-            if variables[n.value][1].sp is None:
+            if variables[n.value][1].var_sp is None:
                 for word in variables[n.value]:
-                    word.sp = variables[n.value][0].sp
+                    word.var_sp = variables[n.value][0].var_sp
             n.is_constant = isinstance(variables[n.value][0], node.Constant)
         elif isinstance(n, node.ForthFunction):
             if n.name == 'INC_VAR':

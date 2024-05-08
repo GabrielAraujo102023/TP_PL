@@ -30,22 +30,57 @@ def p_statements(p):
 
 def p_statement(p):
     """
-    statement : function
+    statement : new_function
+              | new_variable
               | loop
               | conditional
-              | operation
-              | comparison
               | forth_function
               | words
+              | operation
+              | comparison
               | num
-              | variable
     """
     p[0] = p[1]
-    
 
-def p_variable(p):
-    """variable : VARIABLE
-                | CONSTANT"""
+
+def p_new_function(p):
+    """
+    new_function : ':' WORD '(' arguments DOUBLE_HIFEN WORD ')' statements ';'
+                 | ':' WORD '(' arguments ')' statements ';'
+                 | ':' WORD statements ';'
+    """
+    global functions
+
+    if p[2] in functions.keys():
+        print(f"Error: Two functions declared with the same name: {p[2]}", file=sys.stderr)
+        sys.exit(0)
+    else:
+        # p[0] = node.Node()
+        if len(p) > 5:
+            if len(p) < 9:
+                p[0] = node.Function(p[2], p[6], len(p[4]))
+            else:
+                p[0] = node.Function(p[2], p[8], len(p[4]))
+        else:
+            p[0] = node.Function(p[2], p[3])
+
+        functions[p[2]] = p[0]
+
+
+def p_arguments(p):
+    """
+    arguments : arguments WORD
+              | WORD
+    """
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[2]]
+
+
+def p_new_variable(p):
+    """new_variable : VARIABLE
+                    | CONSTANT"""
     global variables
     name = p.slice[1].value
     if name in variables:
@@ -66,14 +101,15 @@ def p_loop(p):
             | BEGIN statements UNTIL
             | BEGIN statements AGAIN
             | BEGIN statements WHILE statements REPEAT"""
-    if p[3].lower() == 'until':
-        p[0] = node.BeginUntil(p[2])
-    elif p[3].lower() == 'again':
-        p[0] = node.BeginAgain(p[2])
-    elif p[5] == 'repeat':
+    if len(p) == 6:
         p[0] = node.BeginWhileRepeat(p[2], p[4])
     else:
-        p[0] = node.Loop(p[2], p[3])
+        if p[3] == 'UNTIL':
+            p[0] = node.BeginUntil(p[2])
+        elif p[3] == 'AGAIN':
+            p[0] = node.BeginAgain(p[2])
+        else:
+            p[0] = node.DoLoop(p[2], p[3])
 
 
 def p_conditional(p):
@@ -87,35 +123,39 @@ def p_conditional(p):
         p[0] = node.Conditional(p[2], p[4])
 
 
-def p_function(p):
+def p_forth_function(p):
     """
-    function : ':' WORD '(' arguments DOUBLE_HIFEN WORD ')' statements ';'
-             | ':' WORD statements ';'
+    forth_function : DOT
+                   | DOT_QUOTE
+                   | CHAR
+                   | EMIT
+                   | DUP
+                   | SWAP
+                   | CR
+                   | DROP
+                   | ROT
+                   | INC_VAR
+                   | SPACE
+                   | OVER
+                   | KEY
+                   | '!'
+                   | '@'
+                   | '?'
     """
-    global functions
-    
-    if p[2] in functions.keys():
-        print(f"Error: Two functions declared with the same name: {p[2]}", file=sys.stderr)
-        sys.exit(0)
-    else:
-        # p[0] = node.Node()
-        if len(p) > 5:
-            p[0] = node.Function(p[2], p[8], len(p[4]))
-        else:
-            p[0] = node.Function(p[2], p[3])
+    p[0] = node.ForthFunction(p.slice[1].type, p.slice[1].value)
 
-        functions[p[2]] = p[0]
 
+def p_words(p):
+    """
+    words : WORD
+    """
+    global functions, variables
 
-def p_arguments(p):
-    """
-    arguments : arguments WORD
-              | WORD
-    """
-    if len(p) == 2:
-        p[0] = [p[1]]
-    else:
-        p[0] = p[1] + [p[2]]
+    if p[1] in functions:
+        p[0] = node.Word(p[1], functions[p[1]])
+    elif p[1] in variables:
+        p[0] = node.Word(p[1])
+        variables[p[1]].append(p[0])
 
 
 def p_operation(p):
@@ -136,40 +176,6 @@ def p_num(p):
     p[0] = node.Num(p[1])
     global previous_num
     previous_num = p[0].type
-
-
-def p_words(p):
-    """
-    words : WORD
-    """
-    global functions, variables
-
-    if p[1] in functions:
-        p[0] = node.Word(p[1], functions[p[1]])
-    elif p[1] in variables:
-        p[0] = node.Word(p[1])
-        variables[p[1]].append(p[0])
-
-
-def p_forth_function(p):
-    """
-    forth_function : DOT
-                   | DOT_QUOTE
-                   | CHAR
-                   | EMIT
-                   | DUP
-                   | SWAP
-                   | CR
-                   | DROP
-                   | ROT
-                   | INC_VAR
-                   | SPACE
-                   | OVER
-                   | '!'
-                   | '@'
-                   | '?'
-    """
-    p[0] = node.ForthFunction(p.slice[1].type, p.slice[1].value)
 
 
 def p_error(p):
